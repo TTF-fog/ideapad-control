@@ -25,6 +25,7 @@ if (UNIX)
 endif()
 
 target_include_directories(tray SYSTEM PUBLIC "tray/include")
+include(FetchContent)
 
 target_compile_features(tray PRIVATE cxx_std_17)
 set_target_properties(tray PROPERTIES 

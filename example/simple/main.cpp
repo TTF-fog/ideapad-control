@@ -1,8 +1,8 @@
+#include "toml.hpp"
 #include <array>
 #include <cstdio>
-#include <cstring>
+
 #include <iostream>
-#include <list>
 #include <memory>
 #include <regex>
 #include <stdexcept>
@@ -66,20 +66,18 @@ void handle_others(std::vector<std::shared_ptr<Tray::Button>> buttons, MODES mod
                 break;
         }
 }
-
-int main()
+bool check_if_supported()
 {
-    std::array<std::string, 4> allowed = {"15ACH6","15ARH7","15ARH05","15ARH7"};
+    auto conf = toml::parse_file("test.toml");
     std::string input = exec("cat /sys/devices/virtual/dmi/id/product_version");
     std::regex regex(R"(^(?:\S+\s+){3}(\S+))");
     std::smatch match;
-    if (std::regex_search(input, match, regex)) {
-        std::cout << "The fourth word is: " << match[1] << std::endl;
-        if (std::find(allowed.begin(), allowed.end(), match[1]) == allowed.end())
-        {
-            throw std::runtime_error("Model not supported");
-        }
-    }
+    std::cout << conf["library"]["name"].value_or("false") << std::endl;
+    return true;
+}
+int main()
+{
+    check_if_supported();
     std::vector<std::shared_ptr<Tray::Button>> buttons;
     Tray::Tray tray("Ideapad Control", "icon.svg");
     tray.addEntry(Tray::Label("Ideapad Control"))->setDisabled(false);
