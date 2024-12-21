@@ -69,11 +69,14 @@ void handle_others(std::vector<std::shared_ptr<Tray::Button>> buttons, MODES mod
 bool check_if_supported()
 {
     auto conf = toml::parse_file("test.toml");
+    //auto supported =conf["supported"]["laptops"]; //this is required trust me
     std::string input = exec("cat /sys/devices/virtual/dmi/id/product_version");
     std::regex regex(R"(^(?:\S+\s+){3}(\S+))");
     std::smatch match;
-    std::cout << conf["library"]["name"].value_or("false") << std::endl;
-    return true;
+    std::regex_search(input, match, regex);
+    std::cout << match.str() << std::endl;
+
+    throw std::runtime_error("Unsupported Laptop, try editing the config file");
 }
 int main()
 {
