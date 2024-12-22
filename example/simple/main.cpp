@@ -68,15 +68,25 @@ void handle_others(std::vector<std::shared_ptr<Tray::Button>> buttons, MODES mod
 }
 bool check_if_supported()
 {
-    auto conf = toml::parse_file("test.toml");
-    //auto supported =conf["supported"]["laptops"]; //this is required trust me
-    std::string input = exec("cat /sys/devices/virtual/dmi/id/product_version");
-    std::regex regex(R"(^(?:\S+\s+){3}(\S+))");
-    std::smatch match;
-    std::regex_search(input, match, regex);
-    std::cout << match.str() << std::endl;
+    auto conf = toml::parse("test.toml");
+    // auto r= conf["supported"]["laptops"];
 
-    throw std::runtime_error("Unsupported Laptop, try editing the config file");
+    const std::string input = exec("cat /sys/devices/virtual/dmi/id/product_version");
+    const std::regex regex(R"(^(?:\S+\s+){3}(\S+))");
+    std::smatch match;
+
+    std::regex_search(input, match, regex);
+    for (std::string const &i: toml::find<std::vector<std::string>>(conf,"supported", "laptops"))
+    {
+
+        if (i == match[1].str())
+        {
+            return true;
+        }
+    }
+    throw std::invalid_argument("Unsupported laptop, try editing the config");
+
+
 }
 int main()
 {
