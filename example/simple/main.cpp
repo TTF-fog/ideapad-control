@@ -1,14 +1,13 @@
 #include "toml.hpp"
 #include <array>
 #include <cstdio>
-
 #include <iostream>
 #include <memory>
 #include <regex>
 #include <stdexcept>
 #include <string>
 #include <tray.hpp>
-
+toml::basic_value<toml::type_config> cmds;
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
     std::string result;
@@ -81,6 +80,8 @@ bool check_if_supported()
 
         if (i == match[1].str())
         {
+            cmds = conf.at(i);
+
             return true;
         }
     }
@@ -88,13 +89,21 @@ bool check_if_supported()
 
 
 }
+void load_current_mode()
+{
+    if (exec(toml::find<std::string>(cmds,"check_mode").c_str()) == "Error: AE_NOT_FOUND")
+    {
+        exec(toml::find<std::string>(cmds,"check_mode_backup").c_str()).replace;
+    }
+}
 int main()
 {
     check_if_supported();
+    load_current_mode();
     std::vector<std::shared_ptr<Tray::Button>> buttons;
     Tray::Tray tray("Ideapad Control", "icon.svg");
     tray.addEntry(Tray::Label("Ideapad Control"))->setDisabled(false);
-    std::shared_ptr<Tray::Submenu> const submenu= tray.addEntry(Tray::Submenu("Power Modes"));
+    std::shared_ptr<Tray::Submenu> const submenu = tray.addEntry(Tray::Submenu("Power Modes"));
     auto cool_button = submenu->addEntry(Tray::Button("Intelligent Cooling",[&] {
         handle_others(buttons, MODES::COOLING);
     }));
