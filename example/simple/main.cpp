@@ -33,7 +33,7 @@ enum MODES
     BATTERY = 2,
 };
 
-void handle_others(std::vector<std::shared_ptr<Tray::Button>> buttons, MODES mode)
+void handle_others(const std::vector<std::shared_ptr<Tray::Button>> &buttons, MODES mode)
 {
     const std::regex pattern("\\[\\*\\]");
 
@@ -89,17 +89,24 @@ bool check_if_supported()
 
 
 }
-void load_current_mode()
+void load_current_mode(std::vector<std::shared_ptr<Tray::Button>> &buttons)
 {
     if (exec(toml::find<std::string>(cmds,"check_mode").c_str()) == "Error: AE_NOT_FOUND")
     {
-        exec(toml::find<std::string>(cmds,"check_mode_backup").c_str()).replace;
+        if  (exec(toml::find<std::string>(cmds, "check_mode_backup").c_str()) != "Error: AE_NOT_FOUND")
+        {
+            auto value = exec(toml::find<std::string>(cmds, "check_mode_backup").c_str());
+
+            handle_others(buttons, static_cast<MODES>(std::stoll(value, nullptr, 16)));
+        }
+
+
     }
 }
 int main()
 {
     check_if_supported();
-    load_current_mode();
+
     std::vector<std::shared_ptr<Tray::Button>> buttons;
     Tray::Tray tray("Ideapad Control", "icon.svg");
     tray.addEntry(Tray::Label("Ideapad Control"))->setDisabled(false);
@@ -116,6 +123,7 @@ int main()
         handle_others(buttons, MODES::BATTERY);
     }));
     buttons.push_back(batt_button);
+    load_current_mode(buttons);
     tray.run();
 
     return 0;
