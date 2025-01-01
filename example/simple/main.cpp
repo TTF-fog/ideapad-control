@@ -46,6 +46,7 @@ void handle_others(const std::vector<std::shared_ptr<Tray::Button>> &buttons, MO
                 if (i == MODES::COOLING) {continue;}
                 buttons[i] ->setText( std::regex_replace(buttons[i]->getText(), pattern, " "));
             }
+            exec(toml::find<std::string>(cmds, "performance_modes", "intelligent_cooling").c_str());
             break;
         case BATTERY:
             buttons[MODES::BATTERY]->setText("Battery Saver [*]");
@@ -54,7 +55,8 @@ void handle_others(const std::vector<std::shared_ptr<Tray::Button>> &buttons, MO
                 if (i == MODES::BATTERY) {continue;}
                 buttons[i] ->setText( std::regex_replace(buttons[i]->getText(), pattern, " "));
             }
-                break;
+            exec(toml::find<std::string>(cmds, "performance_modes", "battery_saving").c_str());
+            break;
             case MODES::PERFORMANCE:
                 buttons[MODES::PERFORMANCE]->setText("Extreme Performance [*]");
                 for (int i = 0 ; i < static_cast<int>(buttons.size()); i++)
@@ -62,6 +64,7 @@ void handle_others(const std::vector<std::shared_ptr<Tray::Button>> &buttons, MO
                     if (i == MODES::PERFORMANCE) {continue;}
                     buttons[i] ->setText( std::regex_replace(buttons[i]->getText(), pattern, " "));
                 }
+                exec(toml::find<std::string>(cmds, "performance_modes", "extreme_performance").c_str());
                 break;
         }
 }
@@ -86,8 +89,6 @@ bool check_if_supported()
         }
     }
     throw std::invalid_argument("Unsupported laptop, try editing the config");
-
-
 }
 void load_current_mode(std::vector<std::shared_ptr<Tray::Button>> &buttons)
 {
