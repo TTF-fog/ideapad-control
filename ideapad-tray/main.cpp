@@ -104,10 +104,10 @@ void load_current_mode(std::vector<std::shared_ptr<Tray::Button>> &buttons)
 
     }
 }
-int main()
+int main(int argc,char* argv[])
 {
     check_if_supported();
-
+    std::cout << argv[0] << "\n";
     std::vector<std::shared_ptr<Tray::Button>> buttons;
     Tray::Tray tray("Ideapad Control", "icon.svg");
     tray.addEntry(Tray::Label("Ideapad Control"))->setDisabled(false);
