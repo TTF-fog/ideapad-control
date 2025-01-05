@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 #include <tray.hpp>
+
 toml::basic_value<toml::type_config> cmds;
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
@@ -23,6 +24,7 @@ std::string exec(const char* cmd) {
     while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr) {
         result += buffer.data();
     }
+
     return result;
 }
 
@@ -68,9 +70,9 @@ void handle_others(const std::vector<std::shared_ptr<Tray::Button>> &buttons, MO
                 break;
         }
 }
-bool check_if_supported()
+bool check_if_supported(char* location)
 {
-    auto conf = toml::parse("test.toml");
+    auto conf = toml::parse(location);
     // auto r= conf["supported"]["laptops"];
 
     const std::string input = exec("cat /sys/devices/virtual/dmi/id/product_version");
@@ -99,17 +101,23 @@ void load_current_mode(std::vector<std::shared_ptr<Tray::Button>> &buttons)
             auto value = exec(toml::find<std::string>(cmds, "check_mode_backup").c_str());
 
             handle_others(buttons, static_cast<MODES>(std::stoll(value, nullptr, 16)));
+
         }
 
 
     }
 }
-int main(int argc,char* argv[])
+int main(int argc, char* argv[])
 {
-    check_if_supported();
-    std::cout << argv[0] << "\n";
+
+    if (argc == 1)
+    {
+        throw std::invalid_argument("No config provided (first arg is config)");
+    }
+    std::cout << "Using config file: " << argv[1] << "\n";
+    check_if_supported(argv[1]);
     std::vector<std::shared_ptr<Tray::Button>> buttons;
-    Tray::Tray tray("Ideapad Control", "icon.svg");
+    Tray::Tray tray("Ideapad Control", "laptopdisconnected");
     tray.addEntry(Tray::Label("Ideapad Control"))->setDisabled(false);
     std::shared_ptr<Tray::Submenu> const submenu = tray.addEntry(Tray::Submenu("Power Modes"));
     auto cool_button = submenu->addEntry(Tray::Button("Intelligent Cooling",[&] {
