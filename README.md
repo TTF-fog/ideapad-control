@@ -15,4 +15,7 @@ check_mode_backup = "echo '\\\\_SB.PCI0.LPC0.EC0.GZ44' > /proc/acpi/call; cat /p
 performance_modes ={intelligent_cooling = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 2' > /proc/acpi/call",extreme_performance = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 3' > /proc/acpi/call", battery_saver = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 1' > /proc/acpi/call"}
 rapid_charge = { turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.QCHO' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}
 battery_conservation = {turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.BTSM' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}``
-``
+```
+Example:
+![image](https://github.com/user-attachments/assets/14a447e3-f90e-45eb-b9a9-9e669896fe16)
+(note: the icon dosen't work for some reason but you can locate it by looking for a blank space)
