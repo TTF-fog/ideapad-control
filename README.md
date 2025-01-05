@@ -2,6 +2,9 @@
 A tray application to be used for switching the different performance modes on an Ideapad Gaming 3/5 (For Linux)
 The commands used for switching mode are described in a TOML file (example.toml) and sourced from
 https://wiki.archlinux.org/title/Lenovo_IdeaPad_Gaming_3
+## Usage
+
+```./ideapad-control config-path```
 Note:
 This will crash on non 15ACH6 models, add your model code to laptops and make a new entry for it
 eg.
@@ -16,6 +19,8 @@ performance_modes ={intelligent_cooling = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 2' > 
 rapid_charge = { turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.QCHO' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}
 battery_conservation = {turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.BTSM' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}``
 ```
+
+
 Example:
 ![image](https://github.com/user-attachments/assets/14a447e3-f90e-45eb-b9a9-9e669896fe16)
 (note: it's possible the icon may not be provided on your distribution, if so, download it and add it to the necessary folder)
