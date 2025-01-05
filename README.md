@@ -19,3 +19,7 @@ battery_conservation = {turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' >
 Example:
 ![image](https://github.com/user-attachments/assets/14a447e3-f90e-45eb-b9a9-9e669896fe16)
 (note: it's possible the icon may not be provided on your distribution, if so, download it and add it to the necessary folder)
+
+Depends on:
+[toml11](https://github.com/ToruNiina/toml11)
+[traypp](https://github.com/Soundux/traypp)
