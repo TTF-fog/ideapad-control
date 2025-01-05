@@ -1,21 +1,101 @@
-## Ideapad Gaming Control
-A tray application to be used for switching the different performance modes on an Ideapad Gaming 3/5 (For Linux)
-The commands used for switching mode are described in a TOML file (example.toml) and sourced from
-https://wiki.archlinux.org/title/Lenovo_IdeaPad_Gaming_3
-Note:
-This will crash on non 15ACH6 models, add your model code to laptops and make a new entry for it
-eg.
-```
-[supported]
-laptops = ["15ARH05"]
-[15ARH05]
+## traypp
+A cross-platform C++17 library that allows you to create simple tray menus.
 
-check_mode = "echo '\\\\_SB.PCI0.LPC0.EC0.SPMO' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"
-check_mode_backup = "echo '\\\\_SB.PCI0.LPC0.EC0.GZ44' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"
-performance_modes ={intelligent_cooling = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 2' > /proc/acpi/call",extreme_performance = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 3' > /proc/acpi/call", battery_saver = "echo '\\\\_SB_.GZFD.WMAA 0 0x2C 1' > /proc/acpi/call"}
-rapid_charge = { turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x07' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x08' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.QCHO' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}
-battery_conservation = {turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' > /proc/acpi/call",turn_off = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x05' > /proc/acpi/call",status_check = "echo '\\\\_SB.PCI0.LPC0.EC0.BTSM' > /proc/acpi/call; cat /proc/acpi/call; printf '\\n'"}``
+## Compatibility
+| Platform | Implementation |
+| -------- | -------------- |
+| Windows  | WinAPI         |
+| Linux    | AppIndicator   |
+
+## Dependencies
+- Linux
+  - libappindicator-gtk3
+
+## Basic Usage
+```cpp
+#include <tray.hpp>
+using Tray::Tray;
+using Tray::Button;
+
+int main()
+{
+  Tray tray("My Tray", "icon.ico");
+  tray.addEntry(Button("Exit", [&]{
+    tray.exit();
+  }));
+
+  tray.run();
+
+  return 0;
+}
 ```
-Example:
-![image](https://github.com/user-attachments/assets/14a447e3-f90e-45eb-b9a9-9e669896fe16)
-(note: the icon should be provided with KDE Plasma but if it isn't you can download it and add it as a system icon)
+> On Windows it is not necessary to pass an icon path as icon, you can also use an icon-resource or an existing HICON.
+
+## Menu components
+### Button
+```cpp
+Button(std::string text, std::function<void()> callback);
+```
+**Parameters:**
+- `callback` - The function that is called when the button is pressed
+----
+### ImageButton
+```cpp
+ImageButton(std::string text, Image image, std::function<void()> callback);
+```
+**Parameters:**
+- `image` - The image tho show
+  - Windows
+    > Image should either be a path to a bitmap or an HBITMAP
+  - Linux
+    > Image should either be a path to a png or a GtkImage
+- `callback` - The function that is called when the button is pressed
+----
+### Toggle
+```cpp
+Toggle(std::string text, bool state, std::function<void(bool)> callback);
+```
+**Parameters:**
+- `state` - The default state of the Toggle
+- `callback` - The function that is called when the toggle is pressed
+----
+### Synced Toggle
+```cpp
+SyncedToggle(std::string text, bool &state, std::function<void(bool &)> callback);
+```
+**Parameters:**
+- `state` - Reference to a boolean that holds the toggle state
+  > The provided boolean will influence the toggled state and **will be modified** if the toggle-state changes
+- `callback` - The function that is called when the toggle is pressed
+----
+### Submenu
+```cpp
+Submenu(std::string text);
+
+template <typename... T> 
+Submenu(std::string text, const T &...entries);
+```
+**Parameters:**
+- `entries` - The entries that should be added upon construction
+  > Can be empty - you can add children later with `addEntry`/`addEntries`
+----
+### Label
+```cpp
+Label(std::string text);
+```
+----
+### Separator
+```cpp
+Separator();
+```
+----
+
+## Installation
+
+- Add the library to your project
+  ```cmake
+  add_subdirectory(/path/to/traypp EXCLUDE_FROM_ALL)
+  link_libraries(tray)
+  ```
+- Use the library
+  - See `example` for examples

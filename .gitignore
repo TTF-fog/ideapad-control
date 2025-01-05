@@ -3,5 +3,8 @@ cmake-build-debug
 .idea
 .vscode
 .history
+tray
+README.md
 .cache
 example_build
+/tray/
