@@ -18,4 +18,4 @@ battery_conservation = {turn_on = "echo '\\\\_SB.PCI0.LPC0.EC0.VPC0.SBMC 0x03' >
 ```
 Example:
 ![image](https://github.com/user-attachments/assets/14a447e3-f90e-45eb-b9a9-9e669896fe16)
-(note: the icon dosen't work for some reason but you can locate it by looking for a blank space)
+(note: it's possible the icon may not be provided on your distribution, if so, download it and add it to the necessary folder)
